@@ -6,7 +6,8 @@ dependencies = [
     "transformers",
     "pandas",
     "numpy",
-    "click"
+    "click",
+    "mlflow"
 ]
 
 [build-system]
