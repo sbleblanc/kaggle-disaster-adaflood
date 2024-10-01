@@ -12,7 +12,8 @@ dependencies = [
     "click",
     "mlflow",
     "psutil",
-    "pynvml"
+    "pynvml",
+    "scikit-learn"
 ]
 
 [build-system]

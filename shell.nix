@@ -1,5 +1,5 @@
 let
-  nixpkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/f1bad50880bae73ff2d82fafc22010b4fc097a9c.tar.gz") { config = {allowUnfree = true;}; overlays = []; }; #nixos-24.05 2024/08/20";
+  nixpkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/1719f27dd95fd4206afb9cec9f415b539978827e.tar.gz") { config = {allowUnfree = true;}; overlays = []; }; #nixos-24.05 2024/10/01";
   nixpkgs-unstable = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/ef7226d68ba45b2de3e428e5d4bb4532caffec7b.tar.gz") { config = {allowUnfree = true;}; overlays = []; }; #nixos-unstable 2024/09/30";
   pkgs = nixpkgs.pkgs;
   nixpkgs-python = import (fetchTarball "https://github.com/cachix/nixpkgs-python/archive/refs/heads/main.zip");
