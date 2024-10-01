@@ -6,6 +6,7 @@ from pathlib import Path
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, set_seed, DataCollatorWithPadding, TrainingArguments, Trainer
 from datasets import load_dataset
 from mlflow.transformers import log_model
+from trainers.flood import FloodingTrainer
 
 @click.group()
 def cli():
@@ -68,7 +69,8 @@ def train(
         metric_for_best_model="loss"
     )
 
-    trainer = Trainer(
+    trainer = FloodingTrainer(
+        b=0.0,
         model=model,
         args=train_args,
         train_dataset=ds['train'],
