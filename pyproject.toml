@@ -3,12 +3,15 @@ name="kaggle-disaster-adaflood"
 requires-python = ">= 3.10"
 dependencies = [
     "torch",
-    "transformers",
+    "transformers[torch]",
     "datasets",
+    "evaluate",
     "pandas",
     "numpy",
     "click",
-    "mlflow"
+    "mlflow",
+    "psutil",
+    "pynvml"
 ]
 
 [build-system]
