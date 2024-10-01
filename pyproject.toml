@@ -4,6 +4,7 @@ requires-python = ">= 3.10"
 dependencies = [
     "torch",
     "transformers",
+    "datasets",
     "pandas",
     "numpy",
     "click",
