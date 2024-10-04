@@ -100,6 +100,7 @@ huggingface-hub==0.25.1
     #   accelerate
     #   datasets
     #   evaluate
+    #   sentence-transformers
     #   tokenizers
     #   transformers
 idna==3.10
@@ -216,7 +217,9 @@ pandas==2.2.3
     #   evaluate
     #   mlflow
 pillow==10.4.0
-    # via matplotlib
+    # via
+    #   matplotlib
+    #   sentence-transformers
 protobuf==5.28.2
     # via mlflow-skinny
 psutil==6.0.0
@@ -271,10 +274,14 @@ scikit-learn==1.5.2
     # via
     #   kaggle-disaster-adaflood (pyproject.toml)
     #   mlflow
+    #   sentence-transformers
 scipy==1.14.1
     # via
     #   mlflow
     #   scikit-learn
+    #   sentence-transformers
+sentence-transformers==3.1.1
+    # via kaggle-disaster-adaflood (pyproject.toml)
 setuptools==75.1.0
     # via
     #   opentelemetry-api
@@ -299,15 +306,19 @@ torch==2.4.1
     # via
     #   kaggle-disaster-adaflood (pyproject.toml)
     #   accelerate
+    #   sentence-transformers
     #   transformers
 tqdm==4.66.5
     # via
     #   datasets
     #   evaluate
     #   huggingface-hub
+    #   sentence-transformers
     #   transformers
 transformers==4.45.1
-    # via kaggle-disaster-adaflood (pyproject.toml)
+    # via
+    #   kaggle-disaster-adaflood (pyproject.toml)
+    #   sentence-transformers
 triton==3.0.0
     # via torch
 typing-extensions==4.12.2

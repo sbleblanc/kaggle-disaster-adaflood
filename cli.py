@@ -9,8 +9,8 @@ from pathlib import Path
 from torch.utils.data import DataLoader
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, set_seed, DataCollatorWithPadding, TrainingArguments, Trainer
 from datasets import load_dataset
-from mlflow.transformers import log_model
-from sklearn.model_selection import KFold
+from mlflow.transformers import log_model, load_model
+from sklearn.model_selection import KFold, StratifiedKFold
 from trainers.flood import FloodingTrainer
 
 @click.group()
@@ -28,6 +28,7 @@ def cli():
 @click.option("-bs", "--batch-size", type=click.INT, default=32)
 @click.option("-e", "--epochs", type=click.INT, default=10)
 @click.option("-wd", "--weight-decay", type=click.FLOAT, default=1e-4)
+@click.option("-f", "--num-folds", type=click.INT, default=5)
 def train(
         seed: int,
         model_name: str,
@@ -37,19 +38,21 @@ def train(
         learning_rate: float,
         batch_size: int,
         epochs: int,
-        weight_decay: float
+        weight_decay: float,
+        num_folds: int
 ):
     set_seed(seed)
     mlflow.set_tracking_uri("http://127.0.0.1:5000")
     mlflow.enable_system_metrics_logging()
 
     tok = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
 
-    ds = load_dataset("csv", data_files=str(train_dataset_path))
+    ds = load_dataset("csv", data_files=str(train_dataset_path), split='train')
     ds = ds.remove_columns(["id", "keyword", "location"]).rename_column("target", "labels")
     ds = ds.map(tok, batched=True, input_columns="text", remove_columns="text")
-    ds = ds['train'].train_test_split(test_size=0.2, shuffle=True)
+    # ds = ds['train'].train_test_split(test_size=0.2, shuffle=True)
+
+    skfold = StratifiedKFold(n_splits=num_folds, shuffle=True)
 
     data_collator = DataCollatorWithPadding(tokenizer=tok)
     f1_metric = evaluate.load("f1")
@@ -74,30 +77,42 @@ def train(
         metric_for_best_model="loss",
         remove_unused_columns=False
     )
+    with mlflow.start_run(run_name=run_name) as parent_run:
 
-    trainer = FloodingTrainer(
-        b=0.0,
-        model=model,
-        args=train_args,
-        train_dataset=ds['train'],
-        eval_dataset=ds['test'],
-        tokenizer=tok,
-        data_collator=data_collator,
-        compute_metrics=compute_metrics,
-    )
+        mlflow.log_param("num_folds", num_folds)
+        mlflow.log_param("input_dataset", str(train_dataset_path))
+        # mlf_ds = mlflow.data.from_pandas(ds.to_pandas(), source=train_dataset_path, targets='labels')
+        # mlflow.log_input(mlf_ds, "training")
 
-    with mlflow.start_run(run_name=run_name):
-        trainer.train()
+        for i, (train_idx, eval_idx) in enumerate(skfold.split(ds, ds['labels'])):
+            train_ds = ds.select(train_idx)
+            eval_ds = ds.select(eval_idx)
 
-        log_model(
-            transformers_model={
-                "model": model,
-                "tokenizer": tok
-            },
-            artifact_path="model",
-            task="text-classification",
-            pip_requirements="requirements.txt"
-        )
+            model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+
+            trainer = FloodingTrainer(
+                b=0.0,
+                model=model,
+                args=train_args,
+                train_dataset=train_ds,
+                eval_dataset=eval_ds,
+                tokenizer=tok,
+                data_collator=data_collator,
+                compute_metrics=compute_metrics,
+            )
+
+            with mlflow.start_run(run_name=f"{run_name}_f{i}", parent_run_id=parent_run.info.run_id, nested=True):
+                trainer.train()
+
+                log_model(
+                    transformers_model={
+                        "model": model,
+                        "tokenizer": tok
+                    },
+                    artifact_path="model",
+                    task="text-classification",
+                    pip_requirements="requirements.txt"
+                )
 
 
 @cli.command()
@@ -194,6 +209,30 @@ def adaflood_train(
     train_df = pd.read_csv(str(train_dataset_path))
     new_df = train_df.set_index('id').join(pd.concat(flood_levels_per_id).set_index('id'))
     new_df.to_csv(output_train_csv)
+
+
+@cli.command()
+@click.option("-i", "--input-csv", type=click.Path(dir_okay=False), required=True)
+@click.option("-c", "--text-col", type=click.STRING, required=True)
+@click.option("-m", "--model-uri", type=click.STRING, required=True)
+@click.option("-o", "--output-csv", type=click.Path(dir_okay=False), default="submission.csv")
+def infer(
+        input_csv: str,
+        text_col: str,
+        model_uri: str,
+        output_csv: str
+):
+    mlflow.set_tracking_uri("http://127.0.0.1:5000")
+
+    test_df = pd.read_csv(input_csv)
+    model = load_model(model_uri, device="cuda:0")
+    inferred = model(test_df[text_col].tolist())
+    test_df['target'] = [
+        1 if res['label'] == "LABEL_1" else 0
+        for res in inferred
+    ]
+    test_df.loc[:, ["id", "target"]].to_csv(output_csv, index=False)
+
 
 
 if __name__ == "__main__":

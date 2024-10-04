@@ -5,6 +5,7 @@ requires-python = ">= 3.10"
 dependencies = [
     "torch",
     "transformers[torch]",
+    "sentence-transformers",
     "datasets",
     "evaluate",
     "pandas",
