@@ -14,10 +14,33 @@ alembic==1.13.3
     # via mlflow
 aniso8601==9.0.1
     # via graphene
+anyio==4.6.0
+    # via
+    #   httpx
+    #   jupyter-server
+argon2-cffi==23.1.0
+    # via jupyter-server
+argon2-cffi-bindings==21.2.0
+    # via argon2-cffi
+arrow==1.3.0
+    # via isoduration
+asttokens==2.4.1
+    # via stack-data
+async-lru==2.0.4
+    # via jupyterlab
 async-timeout==4.0.3
     # via aiohttp
 attrs==24.2.0
-    # via aiohttp
+    # via
+    #   aiohttp
+    #   jsonschema
+    #   referencing
+babel==2.16.0
+    # via jupyterlab-server
+beautifulsoup4==4.12.3
+    # via nbconvert
+bleach==6.1.0
+    # via nbconvert
 blinker==1.8.2
     # via flask
 cachetools==5.5.0
@@ -25,7 +48,12 @@ cachetools==5.5.0
     #   google-auth
     #   mlflow-skinny
 certifi==2024.8.30
-    # via requests
+    # via
+    #   httpcore
+    #   httpx
+    #   requests
+cffi==1.17.1
+    # via argon2-cffi-bindings
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
@@ -35,6 +63,8 @@ click==8.1.7
     #   mlflow-skinny
 cloudpickle==3.0.0
     # via mlflow-skinny
+comm==0.2.2
+    # via ipykernel
 contourpy==1.3.0
     # via matplotlib
 cycler==0.12.1
@@ -45,6 +75,12 @@ datasets==3.0.1
     # via
     #   kaggle-disaster-adaflood (pyproject.toml)
     #   evaluate
+debugpy==1.8.6
+    # via ipykernel
+decorator==5.1.1
+    # via ipython
+defusedxml==0.7.1
+    # via nbconvert
 deprecated==1.2.14
     # via opentelemetry-api
 dill==0.3.8
@@ -56,6 +92,14 @@ docker==7.1.0
     # via mlflow
 evaluate==0.4.3
     # via kaggle-disaster-adaflood (pyproject.toml)
+exceptiongroup==1.2.2
+    # via
+    #   anyio
+    #   ipython
+executing==2.1.0
+    # via stack-data
+fastjsonschema==2.20.0
+    # via nbformat
 filelock==3.16.1
     # via
     #   datasets
@@ -67,6 +111,8 @@ flask==3.0.3
     # via mlflow
 fonttools==4.54.1
     # via matplotlib
+fqdn==1.5.1
+    # via jsonschema
 frozenlist==1.4.1
     # via
     #   aiohttp
@@ -95,6 +141,12 @@ greenlet==3.1.1
     # via sqlalchemy
 gunicorn==23.0.0
     # via mlflow
+h11==0.14.0
+    # via httpcore
+httpcore==1.0.6
+    # via httpx
+httpx==0.27.2
+    # via jupyterlab
 huggingface-hub==0.25.1
     # via
     #   accelerate
@@ -105,19 +157,80 @@ huggingface-hub==0.25.1
     #   transformers
 idna==3.10
     # via
+    #   anyio
+    #   httpx
+    #   jsonschema
     #   requests
     #   yarl
 importlib-metadata==8.5.0
     # via mlflow-skinny
+ipykernel==6.29.5
+    # via jupyterlab
+ipython==8.28.0
+    # via ipykernel
+isoduration==20.11.0
+    # via jsonschema
 itsdangerous==2.2.0
     # via flask
+jedi==0.19.1
+    # via ipython
 jinja2==3.1.4
     # via
     #   flask
+    #   jupyter-server
+    #   jupyterlab
+    #   jupyterlab-server
     #   mlflow
+    #   nbconvert
     #   torch
 joblib==1.4.2
     # via scikit-learn
+json5==0.9.25
+    # via jupyterlab-server
+jsonpointer==3.0.0
+    # via jsonschema
+jsonschema==4.23.0
+    # via
+    #   jupyter-events
+    #   jupyterlab-server
+    #   nbformat
+jsonschema-specifications==2023.12.1
+    # via jsonschema
+jupyter-client==8.6.3
+    # via
+    #   ipykernel
+    #   jupyter-server
+    #   nbclient
+jupyter-core==5.7.2
+    # via
+    #   ipykernel
+    #   jupyter-client
+    #   jupyter-server
+    #   jupyterlab
+    #   nbclient
+    #   nbconvert
+    #   nbformat
+jupyter-events==0.10.0
+    # via jupyter-server
+jupyter-lsp==2.2.5
+    # via jupyterlab
+jupyter-server==2.14.2
+    # via
+    #   jupyter-lsp
+    #   jupyterlab
+    #   jupyterlab-server
+    #   notebook
+    #   notebook-shim
+jupyter-server-terminals==0.5.3
+    # via jupyter-server
+jupyterlab==4.2.5
+    # via notebook
+jupyterlab-pygments==0.3.0
+    # via nbconvert
+jupyterlab-server==2.27.3
+    # via
+    #   jupyterlab
+    #   notebook
 kiwisolver==1.4.7
     # via matplotlib
 mako==1.3.5
@@ -128,9 +241,16 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   mako
+    #   nbconvert
     #   werkzeug
 matplotlib==3.9.2
     # via mlflow
+matplotlib-inline==0.1.7
+    # via
+    #   ipykernel
+    #   ipython
+mistune==3.0.2
+    # via nbconvert
 mlflow==2.16.2
     # via kaggle-disaster-adaflood (pyproject.toml)
 mlflow-skinny==2.16.2
@@ -145,8 +265,25 @@ multiprocess==0.70.16
     # via
     #   datasets
     #   evaluate
+nbclient==0.10.0
+    # via nbconvert
+nbconvert==7.16.4
+    # via jupyter-server
+nbformat==5.10.4
+    # via
+    #   jupyter-server
+    #   nbclient
+    #   nbconvert
+nest-asyncio==1.6.0
+    # via ipykernel
 networkx==3.3
     # via torch
+notebook==7.2.2
+    # via kaggle-disaster-adaflood (pyproject.toml)
+notebook-shim==0.2.4
+    # via
+    #   jupyterlab
+    #   notebook
 numpy==2.1.1
     # via
     #   kaggle-disaster-adaflood (pyproject.toml)
@@ -200,6 +337,8 @@ opentelemetry-sdk==1.16.0
     # via mlflow-skinny
 opentelemetry-semantic-conventions==0.37b0
     # via opentelemetry-sdk
+overrides==7.7.0
+    # via jupyter-server
 packaging==24.1
     # via
     #   accelerate
@@ -207,8 +346,13 @@ packaging==24.1
     #   evaluate
     #   gunicorn
     #   huggingface-hub
+    #   ipykernel
+    #   jupyter-server
+    #   jupyterlab
+    #   jupyterlab-server
     #   matplotlib
     #   mlflow-skinny
+    #   nbconvert
     #   transformers
 pandas==2.2.3
     # via
@@ -216,16 +360,35 @@ pandas==2.2.3
     #   datasets
     #   evaluate
     #   mlflow
+pandocfilters==1.5.1
+    # via nbconvert
+parso==0.8.4
+    # via jedi
+pexpect==4.9.0
+    # via ipython
 pillow==10.4.0
     # via
     #   matplotlib
     #   sentence-transformers
+platformdirs==4.3.6
+    # via jupyter-core
+prometheus-client==0.21.0
+    # via jupyter-server
+prompt-toolkit==3.0.48
+    # via ipython
 protobuf==5.28.2
     # via mlflow-skinny
 psutil==6.0.0
     # via
     #   kaggle-disaster-adaflood (pyproject.toml)
     #   accelerate
+    #   ipykernel
+ptyprocess==0.7.0
+    # via
+    #   pexpect
+    #   terminado
+pure-eval==0.2.3
+    # via stack-data
 pyarrow==17.0.0
     # via
     #   datasets
@@ -236,14 +399,24 @@ pyasn1==0.6.1
     #   rsa
 pyasn1-modules==0.4.1
     # via google-auth
+pycparser==2.22
+    # via cffi
+pygments==2.18.0
+    # via
+    #   ipython
+    #   nbconvert
 pynvml==11.5.3
     # via kaggle-disaster-adaflood (pyproject.toml)
 pyparsing==3.1.4
     # via matplotlib
 python-dateutil==2.9.0.post0
     # via
+    #   arrow
+    #   jupyter-client
     #   matplotlib
     #   pandas
+python-json-logger==2.0.7
+    # via jupyter-events
 pytz==2024.2
     # via pandas
 pyyaml==6.0.2
@@ -251,8 +424,19 @@ pyyaml==6.0.2
     #   accelerate
     #   datasets
     #   huggingface-hub
+    #   jupyter-events
     #   mlflow-skinny
     #   transformers
+pyzmq==26.2.0
+    # via
+    #   ipykernel
+    #   jupyter-client
+    #   jupyter-server
+referencing==0.35.1
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
+    #   jupyter-events
 regex==2024.9.11
     # via transformers
 requests==2.32.3
@@ -262,8 +446,21 @@ requests==2.32.3
     #   docker
     #   evaluate
     #   huggingface-hub
+    #   jupyterlab-server
     #   mlflow-skinny
     #   transformers
+rfc3339-validator==0.1.4
+    # via
+    #   jsonschema
+    #   jupyter-events
+rfc3986-validator==0.1.1
+    # via
+    #   jsonschema
+    #   jupyter-events
+rpds-py==0.20.0
+    # via
+    #   jsonschema
+    #   referencing
 rsa==4.9
     # via google-auth
 safetensors==0.4.5
@@ -280,34 +477,65 @@ scipy==1.14.1
     #   mlflow
     #   scikit-learn
     #   sentence-transformers
+send2trash==1.8.3
+    # via jupyter-server
 sentence-transformers==3.1.1
     # via kaggle-disaster-adaflood (pyproject.toml)
 setuptools==75.1.0
     # via
+    #   jupyterlab
     #   opentelemetry-api
     #   opentelemetry-sdk
 six==1.16.0
-    # via python-dateutil
+    # via
+    #   asttokens
+    #   bleach
+    #   python-dateutil
+    #   rfc3339-validator
 smmap==5.0.1
     # via gitdb
+sniffio==1.3.1
+    # via
+    #   anyio
+    #   httpx
+soupsieve==2.6
+    # via beautifulsoup4
 sqlalchemy==2.0.35
     # via
     #   alembic
     #   mlflow
 sqlparse==0.5.1
     # via mlflow-skinny
+stack-data==0.6.3
+    # via ipython
 sympy==1.13.3
     # via torch
+terminado==0.18.1
+    # via
+    #   jupyter-server
+    #   jupyter-server-terminals
 threadpoolctl==3.5.0
     # via scikit-learn
+tinycss2==1.3.0
+    # via nbconvert
 tokenizers==0.20.0
     # via transformers
+tomli==2.0.2
+    # via jupyterlab
 torch==2.4.1
     # via
     #   kaggle-disaster-adaflood (pyproject.toml)
     #   accelerate
     #   sentence-transformers
     #   transformers
+tornado==6.4.1
+    # via
+    #   ipykernel
+    #   jupyter-client
+    #   jupyter-server
+    #   jupyterlab
+    #   notebook
+    #   terminado
 tqdm==4.66.5
     # via
     #   datasets
@@ -315,26 +543,57 @@ tqdm==4.66.5
     #   huggingface-hub
     #   sentence-transformers
     #   transformers
+traitlets==5.14.3
+    # via
+    #   comm
+    #   ipykernel
+    #   ipython
+    #   jupyter-client
+    #   jupyter-core
+    #   jupyter-events
+    #   jupyter-server
+    #   jupyterlab
+    #   matplotlib-inline
+    #   nbclient
+    #   nbconvert
+    #   nbformat
 transformers==4.45.1
     # via
     #   kaggle-disaster-adaflood (pyproject.toml)
     #   sentence-transformers
 triton==3.0.0
     # via torch
+types-python-dateutil==2.9.0.20241003
+    # via arrow
 typing-extensions==4.12.2
     # via
     #   alembic
+    #   anyio
+    #   async-lru
     #   huggingface-hub
+    #   ipython
     #   multidict
     #   opentelemetry-sdk
     #   sqlalchemy
     #   torch
 tzdata==2024.2
     # via pandas
+uri-template==1.3.0
+    # via jsonschema
 urllib3==2.2.3
     # via
     #   docker
     #   requests
+wcwidth==0.2.13
+    # via prompt-toolkit
+webcolors==24.8.0
+    # via jsonschema
+webencodings==0.5.1
+    # via
+    #   bleach
+    #   tinycss2
+websocket-client==1.8.0
+    # via jupyter-server
 werkzeug==3.0.4
     # via flask
 wrapt==1.16.0

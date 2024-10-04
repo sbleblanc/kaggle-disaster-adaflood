@@ -14,7 +14,8 @@ dependencies = [
     "mlflow",
     "psutil",
     "pynvml",
-    "scikit-learn"
+    "scikit-learn",
+    "notebook"
 ]
 
 [build-system]
