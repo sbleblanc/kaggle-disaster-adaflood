@@ -3,6 +3,7 @@ import mlflow
 import evaluate
 import torch
 import tqdm
+import optuna
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -127,6 +128,84 @@ def train(
 @click.option("-o", "--output-train-csv", type=click.Path(dir_okay=False, path_type=Path), default="data/train_flood.csv")
 @click.option("-g", "--gamma", type=click.FloatRange(0.0, 1.0), required=True)
 @click.option("-f", "--num-folds", type=click.INT, default=5)
+def adaflood_hp_optim(
+        seed: int,
+        model_name: str,
+        train_dataset_path: Path,
+        output_dir: Path,
+        learning_rate: float,
+        batch_size: int,
+        epochs: int,
+        weight_decay: float,
+        output_train_csv: Path,
+        gamma: float,
+        num_folds: int
+):
+    set_seed(seed)
+
+    tok = AutoTokenizer.from_pretrained(model_name)
+
+    ds = load_dataset("csv", data_files=str(train_dataset_path), split='train')
+    ds = ds.remove_columns(["keyword", "location"]).rename_column("target", "labels")
+    ds = ds.map(tok, batched=True, input_columns="text", remove_columns="text")
+    ds = ds.train_test_split(test_size=0.2, shuffle=True)
+    data_collator = DataCollatorWithPadding(tokenizer=tok)
+
+    def objective(trial: optuna.Trial):
+        num_epochs = trial.suggest_int("num_epochs", 1, 5)
+        learning_rate = trial.suggest_float("learning_rate", 1e-6, 1e-2)
+        schedule = trial.suggest_categorical("schedule", ["linear", "constant", "constant_with_warmup"])
+
+        if schedule != "constant":
+            num_warmup_steps = trial.suggest_int("num_warmup_steps", 0, 150)
+        else:
+            num_warmup_steps = 0
+
+        train_args = TrainingArguments(
+            output_dir=str(output_dir),
+            overwrite_output_dir=True,
+            learning_rate=learning_rate,
+            per_device_train_batch_size=batch_size,
+            per_device_eval_batch_size=batch_size,
+            load_best_model_at_end=True,
+            logging_strategy="epoch",
+            eval_strategy="epoch",
+            save_strategy="epoch",
+            weight_decay=weight_decay,
+            num_train_epochs=epochs,
+            metric_for_best_model="loss",
+            warmup_steps=num_warmup_steps,
+            lr_scheduler_type=schedule
+        )
+        model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+        trainer = Trainer(
+            model=model,
+            args=train_args,
+            train_dataset=ds['train'],
+            eval_dataset=ds['eval'],
+            tokenizer=tok,
+            data_collator=data_collator
+        )
+        trainer.train()
+        trainer.evaluate()
+        model.eval()
+
+    study = optuna.create_study(direction='maximize')
+    study.optimize(objective, n_trials=10)
+
+
+@cli.command()
+@click.option("-s", "--seed", type=click.INT, default=42)
+@click.option("-m", "--model-name", type=click.STRING, default="bert-base-cased")
+@click.option("-d", "--train-dataset-path", type=click.Path(dir_okay=False, path_type=Path), default="data/train.csv")
+@click.option("--output-dir", type=click.Path(file_okay=False, path_type=Path), default="model_outputs/")
+@click.option("-lr", "--learning-rate", type=click.FLOAT, default=1e-4)
+@click.option("-bs", "--batch-size", type=click.INT, default=32)
+@click.option("-e", "--epochs", type=click.INT, default=10)
+@click.option("-wd", "--weight-decay", type=click.FLOAT, default=1e-4)
+@click.option("-o", "--output-train-csv", type=click.Path(dir_okay=False, path_type=Path), default="data/train_flood.csv")
+@click.option("-g", "--gamma", type=click.FloatRange(0.0, 1.0), required=True)
+@click.option("-f", "--num-folds", type=click.INT, default=5)
 def adaflood_train(
         seed: int,
         model_name: str,
@@ -166,6 +245,7 @@ def adaflood_train(
         num_train_epochs=epochs,
         metric_for_best_model="loss"
     )
+
 
     flood_levels_per_id = []
 

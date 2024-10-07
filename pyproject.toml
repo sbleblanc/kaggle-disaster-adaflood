@@ -15,7 +15,8 @@ dependencies = [
     "psutil",
     "pynvml",
     "scikit-learn",
-    "notebook"
+    "notebook",
+    "optuna"
 ]
 
 [build-system]
